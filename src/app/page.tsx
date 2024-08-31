@@ -5,7 +5,7 @@ import DepositButton from "../containers/DepositButton";
 
 const Home: FC = () => {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-4">
+    <main>
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-2xl">ERC-20 Vault</h1>
 
