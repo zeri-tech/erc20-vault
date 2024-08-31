@@ -8,6 +8,7 @@ contract Vault {
     address indexed account,
     address indexed tokenAddress,
     uint256 amount,
+    uint256 startTimestamp,
     uint256 unlockTimestamp
   );
 
@@ -20,12 +21,14 @@ contract Vault {
   error TransferFailed();
   error DepositAmountMustBeGreaterThanZero();
   error UnlockTimestampMustBeInTheFuture();
+  error StartTimeMustBeBeforeUnlockTime();
   error DepositStillLocked();
   error InvalidDepositIndex();
 
   struct Deposit {
     address tokenAddress;
     uint256 amount;
+    uint256 startTimestamp;
     uint256 unlockTimestamp;
   }
 
@@ -36,7 +39,7 @@ contract Vault {
     address tokenAddress,
     uint256 amount,
     uint256 unlockTimestamp
-  ) public {
+  ) public returns (uint256 depositIndex) {
     if (amount == 0) {
       revert DepositAmountMustBeGreaterThanZero();
     } else if (unlockTimestamp <= block.timestamp) {
@@ -44,18 +47,29 @@ contract Vault {
     }
 
     IERC20 token = IERC20(tokenAddress);
-
     bool success = token.transferFrom(msg.sender, address(this), amount);
 
     if (!success) {
       revert TransferFailed();
     }
 
+    uint256 depositIndex_ = deposits[msg.sender].length;
+
     // On the initial deposit, this will still work even though the
     // inner array hasn't been explicitly initialized.
-    deposits[msg.sender].push(Deposit(tokenAddress, amount, unlockTimestamp));
+    deposits[msg.sender].push(
+      Deposit(tokenAddress, amount, block.timestamp, unlockTimestamp)
+    );
 
-    emit DepositMade(msg.sender, tokenAddress, amount, unlockTimestamp);
+    emit DepositMade(
+      msg.sender,
+      tokenAddress,
+      amount,
+      block.timestamp,
+      unlockTimestamp
+    );
+
+    return depositIndex_;
   }
 
   function withdraw(address tokenAddress, uint256 depositIndex) public {
@@ -84,5 +98,13 @@ contract Vault {
     }
 
     emit WithdrawalMade(msg.sender, tokenAddress, amountToWithdraw);
+  }
+
+  function getDeposits(address account) public view returns (Deposit[] memory) {
+    if (deposits[account].length == 0) {
+      return new Deposit[](0);
+    }
+
+    return deposits[account];
   }
 }
