@@ -1,27 +1,27 @@
 "use client";
 
-import { FC, useMemo } from "react";
+import { FC, useCallback, useMemo } from "react";
 import { Deposit } from "../config/types";
 import DepositListItem from "./DepositListItem";
-import { FiAlertCircle, FiAlertTriangle } from "react-icons/fi";
+import { FiAlertCircle, FiAlertTriangle, FiRefreshCw } from "react-icons/fi";
 import Skeleton from "./SkeletonLoader";
-import { twMerge } from "tailwind-merge";
 import Alert from "./Alert";
 import AlertTitle from "./Alert/AlertTitle";
 import AlertDescription from "./Alert/AlertDescription";
+import Button from "./Button";
 
 type DepositListProps = {
   title: string;
   deposits: Deposit[] | Error | null;
   emptyMessage?: string;
+  onRefresh: (() => void) | null;
 };
-
-const MAX_WIDTH_CLASS = "max-w-[400px]";
 
 const DepositList: FC<DepositListProps> = ({
   title,
   deposits,
   emptyMessage = "Nothing here yet",
+  onRefresh,
 }) => {
   // Sort deposits by progress (those closest to unlocking first).
   const sortedDeposits = useMemo(() => {
@@ -32,35 +32,43 @@ const DepositList: FC<DepositListProps> = ({
     return deposits.sort((a, b) => a.unlockTimestamp - b.unlockTimestamp);
   }, [deposits]);
 
-  if (sortedDeposits === null) {
-    return (
-      <Skeleton
-        className={twMerge(
-          "min-h-[400px] min-w-[500px] w-full",
-          MAX_WIDTH_CLASS
-        )}
-      />
-    );
-  }
+  const handleRefresh = useCallback(() => {
+    if (onRefresh === null) {
+      return;
+    }
 
+    onRefresh();
+  }, [onRefresh]);
+
+  // TODO: Add state for when there's no account connected.
   return (
-    <div
-      className={twMerge(
-        "flex flex-col items-start justify-center gap-2",
-        MAX_WIDTH_CLASS
-      )}
-    >
-      <h3 className="mt-4">{title}</h3>
+    <div className="flex flex-col items-start justify-center gap-2 w-full">
+      <div className="flex justify-between items-center w-full">
+        <h3>{title}</h3>
 
-      <ul className="flex flex-col items-center justify-center gap-2 max-h-[300px] overflow-y-auto">
-        {sortedDeposits instanceof Error ? (
+        <Button
+          // Disable the refresh button while the deposits are loading,
+          // or if the refresh function is not yet available.
+          disabled={sortedDeposits === null || onRefresh === null}
+          onClick={handleRefresh}
+          variant="outline"
+        >
+          <FiRefreshCw />
+        </Button>
+      </div>
+
+      <ul className="flex flex-col items-center justify-center gap-2 max-h-[300px] overflow-y-auto w-full">
+        {sortedDeposits === null ? (
+          <Skeleton className="min-h-[200px] w-full" />
+        ) : sortedDeposits instanceof Error ? (
           <Alert variant="destructive">
             <FiAlertTriangle />
 
             <AlertTitle>Heads up!</AlertTitle>
 
             <AlertDescription>
-              You can add components and dependencies to your app using the cli.
+              An error occurred while fetching deposits:{" "}
+              {sortedDeposits.message}
             </AlertDescription>
           </Alert>
         ) : (
@@ -70,11 +78,11 @@ const DepositList: FC<DepositListProps> = ({
             ))}
 
             {sortedDeposits.length === 0 && (
-              <li className="w-full flex items-center justify-start gap-1 border rounded-md p-4 min-w-[400px] relative">
+              <Alert>
                 <FiAlertCircle />
 
-                <span>{emptyMessage}</span>
-              </li>
+                <AlertDescription>{emptyMessage}</AlertDescription>
+              </Alert>
             )}
           </>
         )}

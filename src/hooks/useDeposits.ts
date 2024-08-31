@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { VAULT_CONTRACT_ADDRESS } from "../config/constants";
 import { useAccount } from "wagmi";
 import VAULT_ABI from "../abi/vaultAbi";
-import useContractReadOnce from "../abi/useContractRead";
+import useContractReadOnce from "./useContractRead";
 import { Deposit } from "../config/types";
 import BN from "bn.js";
 import assert from "assert";
@@ -24,10 +24,6 @@ const useDeposits = (): (() => Promise<Error | Deposit[]>) | null => {
     if (rawDeposits instanceof Error) {
       return rawDeposits;
     }
-
-    await new Promise((resolve) => setTimeout(resolve, 5_000));
-
-    return new Error("Intentional error.");
 
     return rawDeposits.map(
       (rawDeposit): Deposit => ({
