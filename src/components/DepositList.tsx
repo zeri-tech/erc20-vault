@@ -40,6 +40,7 @@ const DepositList: FC<DepositListProps> = ({
     onRefresh();
   }, [onRefresh]);
 
+  // TODO: Add state for when there's no account connected.
   return (
     <div className="flex flex-col items-start justify-center gap-2 w-full">
       <div className="flex justify-between items-center w-full">
