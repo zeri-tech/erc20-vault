@@ -3,9 +3,10 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
+import { FiLoader } from "react-icons/fi";
 
-const VARIANTS = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+export const VARIANTS = cva(
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 min-w-[100px]",
   {
     variants: {
       variant: {
@@ -38,18 +39,42 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof VARIANTS> {
   asChild?: boolean;
+  isLoading?: boolean;
+  loadingText?: string;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      size,
+      isLoading = false,
+      loadingText,
+      asChild = false,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const Tag = asChild ? Slot : "button";
 
+    // TODO: Make it so that the width between loading and default state changes smoothly instead of jumping, likely using Framer Motion.
     return (
       <Tag
-        className={cn("space-x-1", VARIANTS({ variant, size, className }))}
+        className={cn(
+          "space-x-2",
+          VARIANTS({ variant, size, className }),
+          isLoading && "animate-pulse"
+        )}
         ref={ref}
+        disabled={isLoading || props.disabled}
         {...props}
-      />
+      >
+        {isLoading && <FiLoader className="animate-spin h-4 w-4" />}
+
+        {isLoading ? loadingText : children}
+      </Tag>
     );
   }
 );
