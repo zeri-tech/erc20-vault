@@ -4,6 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 import { FiLoader } from "react-icons/fi";
+import { ReactNode } from "react";
 
 export const VARIANTS = cva(
   "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 min-w-[100px]",
@@ -41,6 +42,7 @@ export interface ButtonProps
   asChild?: boolean;
   isLoading?: boolean;
   loadingText?: string;
+  rightIcon?: ReactNode;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -53,6 +55,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       loadingText,
       asChild = false,
       children,
+      rightIcon,
       ...props
     },
     ref
@@ -74,6 +77,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {isLoading && <FiLoader className="animate-spin h-4 w-4" />}
 
         {isLoading ? loadingText : children}
+
+        {!isLoading && rightIcon !== undefined && rightIcon}
       </Tag>
     );
   }

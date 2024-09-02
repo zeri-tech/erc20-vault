@@ -2,7 +2,7 @@
 
 import { FC, useCallback, useState } from "react";
 import Button from "../components/Button";
-import { FiPlusCircle } from "react-icons/fi";
+import { FiArrowRight, FiPlusCircle } from "react-icons/fi";
 import { useAccount, useWriteContract } from "wagmi";
 import {
   Dialog,
@@ -105,6 +105,8 @@ const DepositButton: FC = () => {
             type="submit"
             onClick={submitDepositTx}
             isLoading={isPending}
+            // TODO: Margin should be applied within the Button component.
+            rightIcon={<FiArrowRight className="ml-2" />}
           >
             Deposit & lock tokens
           </Button>
