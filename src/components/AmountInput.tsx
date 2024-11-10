@@ -28,6 +28,11 @@ const AmountInput: FC<AmountInputProps> = ({
 
   const handleValueChange = useCallback(
     (newValue: string) => {
+      // Only allow digits.
+      if (!/^\d+$/g.test(newValue)) {
+        return;
+      }
+
       setValue(new BN(newValue));
     },
     [setValue]
