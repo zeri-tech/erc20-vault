@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 import { FiLoader } from "react-icons/fi";
 import { ReactNode } from "react";
 
-export const BUTTON_VARIANTS = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 min-w-[100px]",
+export const buttonVariants = cva(
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -38,7 +38,7 @@ export const BUTTON_VARIANTS = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof BUTTON_VARIANTS> {
+    VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   isLoading?: boolean;
   loadingText?: string;
@@ -67,7 +67,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <Tag
         className={cn(
           "space-x-2",
-          BUTTON_VARIANTS({ variant, size, className }),
+          buttonVariants({ variant, size, className }),
           isLoading && "animate-pulse"
         )}
         ref={ref}
