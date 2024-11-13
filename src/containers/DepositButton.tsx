@@ -64,7 +64,14 @@ const DepositButton: FC = () => {
         },
       }
     );
-  }, [amount, isReadyToSubmitTx, tokenId, unlockTimestamp, writeContract]);
+  }, [
+    amount,
+    isReadyToSubmitTx,
+    toast,
+    tokenId,
+    unlockTimestamp,
+    writeContract,
+  ]);
 
   // TODO: Implement deposit logic.
 
