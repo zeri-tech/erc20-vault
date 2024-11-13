@@ -24,12 +24,12 @@ const AmountInput: FC<AmountInputProps> = ({
   legendLearnMoreHref,
 }) => {
   // TODO: Format value as a string.
-  const stringValue = value?.toString() ?? "";
+  const stringValue = value?.toString();
 
   const handleValueChange = useCallback(
     (newValue: string) => {
-      // Only allow digits.
-      if (!/^\d+$/g.test(newValue)) {
+      // Only allow unsigned digits.
+      if (Number(newValue) < 0) {
         return;
       }
 
@@ -40,6 +40,7 @@ const AmountInput: FC<AmountInputProps> = ({
 
   return (
     <Input
+      type="number"
       placeholder={placeholder}
       rightElement={<TokenSelect tokenId={tokenId} setTokenId={setTokenId} />}
       legend={legend}

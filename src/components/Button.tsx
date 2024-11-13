@@ -74,7 +74,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={isLoading || props.disabled}
         {...props}
       >
-        {isLoading && <FiLoader className="animate-spin h-4 w-4" />}
+        {isLoading && <FiLoader className="animate-spin size-4" />}
 
         {isLoading ? loadingText : children}
 
