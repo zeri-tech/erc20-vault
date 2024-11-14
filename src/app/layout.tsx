@@ -8,6 +8,7 @@ import Providers from "./providers";
 import Footer from "../containers/Footer";
 import { twMerge } from "tailwind-merge";
 import AppMenu from "@/components/AppMenu";
+import AppSidebar from "@/components/AppSidebar";
 
 const APP_NAME = "ERC20 Vault";
 const INTER = Inter({ subsets: ["latin"] });
@@ -24,17 +25,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={twMerge("min-h-screen flex flex-col", INTER.className)}>
+      <body className={twMerge("min-h-screen", INTER.className)}>
         <Providers>
-          <header className="w-full h-24 border-b border-b-gray-200">
-            <AppMenu />
-          </header>
+          <div className="h-screen w-screen flex">
+            <aside className="w-72 h-full flex flex-col bg-blue-600">
+              <AppSidebar className="grow" />
 
-          <div className="flex flex-col justify-center items-center py-6">
-            {children}
+              <Footer className="text-white border-t border-t-blue-300/80" />
+            </aside>
+
+            <section className="flex flex-col grow">
+              <header className="w-full h-24 border-b border-b-gray-200">
+                <AppMenu />
+              </header>
+
+              <div className="flex flex-col grow">{children}</div>
+            </section>
           </div>
-
-          <Footer />
         </Providers>
       </body>
     </html>
