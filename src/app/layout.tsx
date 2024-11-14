@@ -7,6 +7,7 @@ import { Inter } from "next/font/google";
 import Providers from "./providers";
 import Footer from "../containers/Footer";
 import { twMerge } from "tailwind-merge";
+import AppMenu from "@/components/AppMenu";
 
 const APP_NAME = "ERC20 Vault";
 const INTER = Inter({ subsets: ["latin"] });
@@ -23,14 +24,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={twMerge(
-          "min-h-screen flex flex-col items-center justify-center",
-          INTER.className
-        )}
-      >
+      <body className={twMerge("min-h-screen flex flex-col", INTER.className)}>
         <Providers>
-          {children}
+          <header className="w-full h-24 border-b border-b-gray-200">
+            <AppMenu />
+          </header>
+
+          <div className="flex flex-col justify-center items-center py-6">
+            {children}
+          </div>
 
           <Footer />
         </Providers>
